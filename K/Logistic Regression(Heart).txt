@@ -1,0 +1,48 @@
+
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+
+
+df = pd.read_csv('/content/heart (1).csv')
+
+
+X = df.drop('target', axis=1)  
+y = df['target'] 
+
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+
+logistic_regression = LogisticRegression(max_iter=1000)
+
+
+logistic_regression.fit(X_train, y_train)
+
+def predict_heart_disease():
+    age = float(input("Enter age: "))
+    sex = int(input("Enter sex (1 = Male, 0 = Female): "))
+    cp = int(input("Enter chest pain type (0-3): "))  
+    trestbps = float(input("Enter resting blood pressure: "))
+    chol = float(input("Enter cholesterol level: "))
+    fbs = int(input("Enter fasting blood sugar > 120 mg/dl (1 = True, 0 = False): "))
+    restecg = int(input("Enter resting electrocardiographic results (0-2): "))
+    thalach = float(input("Enter maximum heart rate achieved: "))
+    exang = int(input("Enter exercise induced angina (1 = Yes, 0 = No): "))
+    oldpeak = float(input("Enter ST depression induced by exercise relative to rest: "))
+    slope = int(input("Enter slope of the peak exercise ST segment (0-2): "))
+    ca = int(input("Enter number of major vessels (0-3): "))
+    thal = int(input("Enter thalassemia type (1 = Normal, 2 = Fixed defect, 3 = Reversable defect): "))
+
+    user_input = np.array([[age, sex, cp, trestbps, chol, fbs, restecg, thalach, exang, oldpeak, slope, ca, thal]])
+
+    prediction = logistic_regression.predict(user_input)
+
+    if prediction[0] == 1:
+        print("Prediction: The person is likely to have heart disease.")
+    else:
+        print("Prediction: The person is not likely to have heart disease.")
+
+predict_heart_disease()

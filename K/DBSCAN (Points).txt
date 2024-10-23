@@ -1,0 +1,62 @@
+import numpy as np
+
+
+points = np.array([
+    [3, 7], 
+    [4, 6], 
+    [5, 5],  
+    [6, 4],
+    [7, 3],  
+    [6, 2],
+    [7, 2],  
+    [8, 4],  
+])
+
+eps = 2.5
+min_pts = 3
+
+
+def euclidean_distance(p1, p2):
+    return np.sqrt(np.sum((p1 - p2) ** 2))
+
+
+def get_neighbors(point_idx, points, eps):
+    neighbors = []
+    for idx, point in enumerate(points):
+        if euclidean_distance(points[point_idx], point) <= eps:
+            neighbors.append(idx)
+    return neighbors
+
+
+core_points = []
+border_points = []
+outliers = []
+
+for i, point in enumerate(points):
+    neighbors = get_neighbors(i, points, eps)
+    
+    if len(neighbors) >= min_pts: 
+        core_points.append((chr(65 + i), point))
+    else:
+        is_border = False
+        for neighbor in neighbors:
+
+            if len(get_neighbors(neighbor, points, eps)) >= min_pts:
+                border_points.append((chr(65 + i), point))
+                is_border = True
+                break
+        if not is_border:
+            outliers.append((chr(65 + i), point))
+
+
+print("Core Points:")
+for label, point in core_points:
+    print(f"{label}: {point}")
+
+print("\nBorder Points:")
+for label, point in border_points:
+    print(f"{label}: {point}")
+
+print("\nOutliers (Noise Points):")
+for label, point in outliers:
+    print(f"{label}: {point}")

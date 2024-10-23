@@ -1,0 +1,40 @@
+
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+
+
+train_df = pd.read_csv('/content/Mobile-data-train (1) (1).csv')  
+
+
+test_df = pd.read_csv('/content/Mobile-data-test (1).csv')
+
+
+print("Training Data Head:")
+print(train_df.head())
+print("\nTesting Data Head (No price_range column):")
+print(test_df.head())
+
+
+X_train = train_df.drop(columns='price_range')  
+y_train = train_df['price_range']  
+
+
+X_test = test_df.drop(columns='id') 
+
+
+rf = RandomForestClassifier(n_estimators=100, random_state=42)
+
+
+rf.fit(X_train, y_train)
+
+y_test_pred = rf.predict(X_test)
+
+
+test_df['predicted_price_range'] = y_test_pred
+
+
+print("\nTest Data with Predicted Price Range:")
+print(test_df.head())
+
+
+test_df.to_csv('mobile_price_test_with_predictions.csv', index=False)
