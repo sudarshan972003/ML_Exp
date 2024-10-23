@@ -1,0 +1,55 @@
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+
+
+df = pd.read_csv('apples_and_oranges.csv')
+
+
+print(df.head())
+
+
+
+
+df['Class'] = df['Class'].apply(lambda x: 0 if x == 'apple' else 1)
+
+
+X = df[['Weight', 'Size']] 
+y = df['Class']
+
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+
+svm_classifier = SVC(kernel='linear')
+
+
+svm_classifier.fit(X_train_scaled, y_train)
+
+y_pred = svm_classifier.predict(X_test_scaled)
+
+
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Model Accuracy: {accuracy * 100:.2f}%")
+
+
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred, target_names=['Apple', 'Orange']))
+
+
+print("\nConfusion Matrix:")
+print(confusion_matrix(y_test, y_pred))
+
+
+new_record = [[69, 4]]
+new_record_scaled = scaler.transform(new_record)
+new_pred = svm_classifier.predict(new_record_scaled)
+
+print(f"Prediction for new record: {'Apple' if new_pred[0] == 0 else 'Orange'}")

@@ -1,0 +1,48 @@
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+
+
+df = pd.read_csv('Mobile-data-train (1) (1).csv')
+
+
+print(df.head())
+
+
+
+
+X = df.drop(columns='price_range') 
+y = df['price_range']  
+
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+
+rf = RandomForestClassifier(n_estimators=100, random_state=42)
+
+
+rf.fit(X_train, y_train)
+
+
+y_pred = rf.predict(X_test)
+
+
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Model Accuracy: {accuracy * 100:.2f}%")
+
+
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred))
+
+
+print("\nConfusion Matrix:")
+print(confusion_matrix(y_test, y_pred))
+
+
+new_record = [[842, 0, 2.2, 0, 1, 0, 7, 0.6, 188, 2, 2, 20, 756, 2549, 9, 7, 19, 0, 0, 1]] 
+new_pred = rf.predict(new_record)
+
+
+print(f"Prediction for new record: Price range {new_pred[0]} (0: low, 1: medium, 2: high, 3: very high)")

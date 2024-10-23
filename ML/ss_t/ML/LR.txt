@@ -1,0 +1,72 @@
+
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+
+file_path = 'housing.csv'  
+housing_data = pd.read_csv(file_path)
+
+
+housing_data_clean = housing_data.drop('Address', axis=1)
+
+
+summary_statistics = housing_data_clean.describe()
+print("Summary Statistics:\n", summary_statistics)
+
+
+plt.figure(figsize=(12, 8))
+housing_data_clean.hist(bins=30, edgecolor='black', figsize=(12, 8))
+plt.suptitle("Distribution of Features", fontsize=16)
+plt.tight_layout()
+plt.show()
+
+
+correlation_matrix = housing_data_clean.corr()
+
+plt.figure(figsize=(10, 8))
+sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', linewidths=0.5)
+plt.title("Correlation Matrix of Housing Features")
+plt.show()
+
+
+
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+from sklearn.preprocessing import OneHotEncoder
+
+
+df = pd.read_csv('housing.csv')
+
+
+categorical_columns = df.select_dtypes(include=['object', 'category']).columns
+
+
+df_encoded = pd.get_dummies(df, columns=categorical_columns)
+
+
+X = df_encoded.drop('Price', axis=1) 
+y = df_encoded['Price'] 
+
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+
+regressor = LinearRegression()
+regressor.fit(X_train, y_train)
+
+
+y_pred = regressor.predict(X_test)
+
+
+mse = mean_squared_error(y_test, y_pred)
+mae = mean_absolute_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
+
+
+print(f"Mean Squared Error (MSE): {mse}")
+print(f"Mean Absolute Error (MAE): {mae}")
+print(f"R-squared (R^2): {r2}")
